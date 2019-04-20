@@ -47,6 +47,7 @@ Make sure you have already skimmed the [Strapi docs](https://strapi.io/documenta
     * Development mode: `strapi_dev`
     * Staging mode: `strapi_staging`
     * Production mode: `strapi` *(already exists)*
+8. Allow the Private IP from the EC2 instance through the firewall in security groups
 
 ### ⊙ S3
 0. Click `Create bucket` button
@@ -73,6 +74,7 @@ Point the A / CNAME records to the EC2's IPv4 Public IP / Public DNS (IPv4), suc
 Switch to the directory where the key pair `strapi-cms.pem` locates:
 
 ```shell
+$ chmod 400 strapi-cms.pem
 $ ssh -i strapi-cms.pem ubuntu@<ec2-public-ip>
 $ sudo apt update
 ```
