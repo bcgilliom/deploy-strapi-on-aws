@@ -62,6 +62,72 @@ Make sure you have already skimmed the [Strapi docs](https://strapi.io/documenta
     * `Do not grant Amazon S3 Log Delivery group write access to this bucket`
 4. Review: click `Create bucket` button
 
+### S3 bucket access
+0. Log in as Console Admin
+1. Go to services -> IAM
+2. create a new user SDK/CLI user, create a new group, create a new permission
+3. Give the user full access to the bucket created above (TODO: it's probably possible to be more fine grained than this, but get, put, list, delete was getting permission denied):
+
+```js
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::bucket-name"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::bucket-name/*"
+            ]
+        }
+    ]
+}
+```
+4. Set the permissions on the bucket (is this really necesarry??)
+```js
+{
+    "Version": "2012-10-17",
+    "Id": "Policyxxxx",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<id>:user/<user>"
+            },
+            "Action": [
+                "s3:GetBucketLocation",
+                "s3:ListBucket"
+            ],
+            "Resource": "arn:aws:s3:::bucket-name"
+        },
+        {
+            "Sid": "Stmtxxxx",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<id>:user/<user>"
+            },
+            "Action": [
+                "s3:DeleteObject",
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::bucket-name/*"
+        }
+    ]
+}
+```
+5. Add the permission and user to the group
+
 ## § Point your domain to EC2
 Point the A / CNAME records to the EC2's IPv4 Public IP / Public DNS (IPv4), such as:
 * Development mode: `dev-cms.yourdomain.com`
@@ -240,6 +306,8 @@ $ git commit -m 'init'
 $ git remote add origin <private-git-repo-url>
 $ git push -u origin master
 ```
+
+## TODO: use .env file for database settings
 
 ## § Deploy Strapi on EC2
 
